@@ -1132,6 +1132,40 @@ XS(w32_GetOSVersion)
     PUTBACK;
 }
 
+XS(w32_GetOSUpdateBuildRevision)
+{
+    dXSARGS;
+    LONG status;
+    DWORD val, val_size = sizeof(val);
+    PFNRegGetValueA pfnRegGetValueA;
+    HMODULE module;
+    
+    if (items)
+        Perl_croak(aTHX_ "usage: Win32::GetOSUpdateBuildRevision()");
+
+    EXTEND(SP, 1);
+
+    module = GetModuleHandleA("advapi32.dll");
+    GETPROC(RegGetValueA);
+    if (!pfnRegGetValueA)
+        XSRETURN_UNDEF;
+
+    status = pfnRegGetValueA(
+        HKEY_LOCAL_MACHINE,
+        "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion",
+        "UBR",
+        RRF_RT_REG_DWORD,
+        NULL,
+        &val,
+        &val_size
+    );
+
+    if (status == ERROR_SUCCESS)
+        XSRETURN_IV(val);
+
+    XSRETURN_UNDEF;
+}
+
 XS(w32_IsWinNT)
 {
     dXSARGS;
@@ -2058,6 +2092,7 @@ BOOT:
     newXS("Win32::DomainName", w32_DomainName, file);
     newXS("Win32::FsType", w32_FsType, file);
     newXS("Win32::GetOSVersion", w32_GetOSVersion, file);
+    newXS("Win32::GetOSUpdateBuildRevision", w32_GetOSUpdateBuildRevision, file);
     newXS("Win32::IsWinNT", w32_IsWinNT, file);
     newXS("Win32::IsWin95", w32_IsWin95, file);
     newXS("Win32::FormatMessage", w32_FormatMessage, file);

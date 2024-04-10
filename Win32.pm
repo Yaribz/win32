@@ -1144,6 +1144,13 @@ different major/minor version number than Windows XP.
 Similarly the name "WinWin32s" should have been "Win32s" but has been
 kept as-is for backwards compatibility reasons too.
 
+=item Win32::GetOSUpdateBuildRevision()
+
+Returns the current Update Build Revision (UBR) of the Win32 operating
+system if applicable, or undef otherwise. The UBR number is the last
+part of the build numbers used by Microsoft to identify the exact
+Windows revisions.
+
 =item Win32::GetOSVersion()
 
 [CORE] Returns the list (STRING, MAJOR, MINOR, BUILD, ID), where the
