@@ -596,6 +596,8 @@ sub _GetOSName {
                 }
                 else {
                     $desc = " Build $build";
+                    my $ubr = Win32::GetOSUpdateBuildRevision();
+                    $desc.=".$ubr" if(defined $ubr);
                 }
             }
             else {
@@ -620,6 +622,8 @@ sub _GetOSName {
                     }
                     else {
                         $desc = "Build $build";
+                        my $ubr = Win32::GetOSUpdateBuildRevision();
+                        $desc.=".$ubr" if(defined $ubr);
                     }
                 }
             }
