@@ -30,6 +30,7 @@ package Win32;
     );
     @EXPORT_OK = qw(
         GetOSName
+        GetOSFullVersion
         SW_HIDE
         SW_SHOWNORMAL
         SW_SHOWMINIMIZED
@@ -376,6 +377,14 @@ sub GetOSDisplayName {
     }
     $name .= " $desc" if length $desc;
     return $name;
+}
+
+sub GetOSFullVersion {
+  my(undef, $major, $minor, $build) = Win32::GetOSVersion();
+  my @os_full_version = ($major, $minor, $build);
+  my $rev = Win32::GetOSUpdateBuildRevision();
+  push(@os_full_version, $rev) if(defined $rev);
+  return wantarray ? @os_full_version : join('.',@os_full_version);
 }
 
 sub _GetSystemMetrics {
@@ -1095,6 +1104,15 @@ this system belongs to.  The Win32::GetOSName(), Win32::GetOSVersion,
 Win32::GetProductInfo() and Win32::GetSystemMetrics() functions provide
 the base information to check for certain capabilities, or for families
 of OS releases.
+
+=item Win32::GetOSFullVersion()
+
+In scalar context returns a string containing the full version of the
+Win32 operating system (including revision number if applicable), in
+following format: C<major.minor.build.revision> (example for Windows 10
+version 22H2 build 19045.4170: C<"10.0.19045.4170">). In list context
+returns the same numbers in a list instead:
+C<($major, $minor, $build, $revision)> (example: C<(10, 0, 19045, 4170)>).
 
 =item Win32::GetOSName()
 
